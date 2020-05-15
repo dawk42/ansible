@@ -1,9 +1,18 @@
+
 all:
   children:
     webservers:
+      ansible_user:
+        justincase
       hosts:
         web1.it385.local
         web2.it385.local
+    ipwebservers:
+      ansible_user:
+        justincase
+      hosts:
+        192.168.0.111
+        192.168.0.112
 
     dbservers:
       hosts:
