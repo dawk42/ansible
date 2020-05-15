@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+  - name: Create a file in a remote machine
+    file:
+      dest: /tmp/file
+      state: '{{file_state}}'
+      
