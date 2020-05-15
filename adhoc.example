@@ -1,0 +1,10 @@
+ansible -i host.ini all -m shell -a 'cat /etc/passwd|grep egoad' -k -u justincase
+
+-m copy -a "src=/etc/hosts dest=/tmp/hosts"
+-m file -a "dest=/srv/foo/b.txt mode=600 owner=dawk group=dawk"
+-m file -a "dest=/path/to/c mode=755 owner=dawk group=dawk state=directory"
+-m file -a "dest=/path/to/c state=absent"
+-m yum -a "name=acme state=present"
+-m user -a "name=foo password=<encrypted password>"
+-m user -a "name=foo state=absent"
+-m service -a "name=httpd state=started"
