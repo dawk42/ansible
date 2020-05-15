@@ -1,0 +1,11 @@
+all:
+  children:
+    webservers:
+      hosts:
+        web1.it385.local
+        web2.it385.local
+
+    dbservers:
+      hosts:
+        db1.it385.local
+        db2.it385.local
