@@ -1,0 +1,19 @@
+---
+- hosts: "all"
+  tasks:
+  - name: "Add user account "
+    user:
+      name: egoad
+      password: $6$SXywiMlMuOlZF9KM$TPmOF7D3XwhMmAC7Cqdb0SGl8DlE0ldzkfBVo.qSbOWvQXpzBBUwWf8vCm7XAnf4GTrYAOAYTocD8EbThZ735.
+      update_password: always
+      group: wheel
+      state: present
+      uid: 1337
+      system: no
+      createhome: yes
+      home: /home/egoad
+      shell: /bin/bash
+      generate_ssh_key: yes
+      ssh_key_bits: 4096
+      ssh_key_file: .ssh/
+    
