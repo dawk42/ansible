@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: "Create User (egoad/Rubberduck!)"
+    user:
+      name: egoad
+      password: '$6$2VdVtN0WCzt3TO$ocRVBAaxIxVAMybWx7tgfUz.jBHmTYO94uI5u/ohFI4gaeoFWkGFL9j4GWjluF4jjHfVlFTOB4ONo6TM4mOzm1'
+      state: present
+  - name: "another user derek"
+    user:
+      name: derek
+      password: "{{ 'Password01' | password_hash('sha512') }}"
+      state: present
