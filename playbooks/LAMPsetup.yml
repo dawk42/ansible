@@ -12,3 +12,44 @@
       name: derek
       password: "{{ 'Password01' | password_hash('sha512') }}"
       state: present
+- hosts: db
+  tasks:
+  - name: Install MariaDB
+    become: yes
+    yum:
+      name: 'mariadb-server'
+      state: present
+  - name: Eable MariaDB
+    become: yes
+    service:
+      name: 'mariadb'   
+      enabled: yes
+      state: started
+- hosts: web
+  tasks:
+  - name: Install Apache (httpd)
+    become: yes
+    yum:
+      name: 'httpd'
+      state: present
+  - name: Start/Enable Web Server
+    become: yes
+    service:
+      name: 'httpd'
+      state: started 
+      enabled: yes
+  - name: Configure Firewalld
+    become: yes
+    firewalld:
+      service: http
+      state: enabled
+      permanent: true
+    notify:
+      - restart-firewall
+
+  handlers:
+  - name: restart-firewall
+    become: yes
+    service:
+      name: 'firewalld'
+      state: restarted
