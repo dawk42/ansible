@@ -20,4 +20,4 @@
   - name: Create file on web1
     file:
       dest: /tmp/ans/WEB1-file
-      state: '{file_state}'
+      state: '{{file_state}}'
