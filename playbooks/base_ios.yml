@@ -1,0 +1,33 @@
+---
+- hosts: routers
+  gather_facts: false
+  connection: local
+  tasks: 
+  - name: Base Router Config
+    ios_command:
+      commands:
+      - configure terminal
+      - hostname R1
+      - security passwords min-length 10
+      - enable secret Ciscoenpa55
+      - ip route 0.0.0.0 0.0.0.0 G0/1
+      - no ip domian-lookup
+      - line console 0
+      - password Ciscoenpa55
+      - login
+      - exec-timeout 5 0
+      - line vty 0 4
+      - password Ciscoenpa55
+      - login
+      - exec-timeout 5 0
+      - exit 
+      - login block-for 300 attempts 4 within 120
+      - service password-encryption
+      - banner motd #Warning! This is an amazing Router. Unauthorized access prohibited.#
+      - exit
+      - copy run start
+      - show run
+      register: sr_output
+  - name: Report Info
+    debug:
+      var: sr_output
