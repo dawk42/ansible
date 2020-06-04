@@ -10,7 +10,7 @@
       - hostname R1
       - security passwords min-length 10
       - enable secret Ciscoenpa55
-      - no ip domian-lookup
+      - no ip domain-lookup
       - ip routing
       - ip route 0.0.0.0 0.0.0.0 GigabitEthernet1
       - line console 0
