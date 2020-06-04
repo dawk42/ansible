@@ -2,3 +2,8 @@
 - hosts: routers
   gather_facts: false
   connection: local
+  tasks: 
+  - name: show run
+    ios_command:
+      commands:
+      - sh run
