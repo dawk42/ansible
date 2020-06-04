@@ -7,3 +7,8 @@
     ios_command:
       commands:
       - sh run
+    register: sr_output
+  - name: Report Info
+    debug:
+      var: sr_output
+      
