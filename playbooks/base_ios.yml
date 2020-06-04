@@ -24,7 +24,7 @@
       - exit 
       - login block-for 300 attempts 4 within 120
       - service password-encryption
-      - banner motd #Warning! This is an amazing Router. Unauthorized access prohibited.#
+      - banner motd #Warning This is an amazing Router Unauthorized access prohibited#
       - exit
       - copy run start
       - show run
