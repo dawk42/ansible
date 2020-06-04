@@ -27,7 +27,7 @@
       - exit
       - copy run start
       - show run
-      register: sr_output
+    register: sr_output
   - name: Report Info
     debug:
       var: sr_output
