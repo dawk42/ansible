@@ -1,0 +1,10 @@
+---
+- hosts: web
+  tasks:
+  - name: Check if file exists
+    stat: path=/tmp/hosts
+    register: hosts_file
+  - name: report status
+    debug:
+      var: hosts_file.stat.exists
+      
