@@ -7,4 +7,6 @@
   - name: report status
     debug:
       var: hosts_file.stat.exists
-      
+  - name: Copy file
+    copy: src=/etc/hosts dest=/tmp/hosts
+    when: hosts_file.stat.exists == false
