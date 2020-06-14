@@ -1,6 +1,6 @@
 ---
 - hosts: dns
-  task: 
+  tasks: 
   - name: Install Bind 1...
     become: yes
     yum:
