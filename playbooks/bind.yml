@@ -16,17 +16,18 @@
     replace:
       path: /etc/named.conf
       backup: yes
-      regexp: '^listen-on port 53 { 127.0.0.1; }; $'
-      replace: 'listen-on port 53 { 127.0.0.1; 192.168.142.254; }; ' 
+      regexp: '^(\s+)listen-on port 53 { 127.0.0.1; };$'
+      replace: '        listen-on port 53 { 127.0.0.1; 192.168.142.254; };'
+       
   - name: Configure /etc/named.conf part 2
     become: yes
     replace:
       path: /etc/named.conf
       backup: yes
-      regexp: '^allow-query     { localhost; };$'
-      replace: 'allow-query     { localhost; 192.168.142.0/24; };'
+      regexp: '^(\s+)allow-query     { localhost; };$'
+      replace: '        allow-query     { localhost; 192.168.142.0/24; };'
 
-  - name: Add Forward Zone Config
+  - name: Add Forward and Reverse Zone Config
     become: yes
     blockinfile:
       path: /etc/named.conf
@@ -41,20 +42,30 @@
                  allow-update { none; };
         };
         
+        zone "142.168.192.in-addr.arpa" IN {
+
+                 type master;
+
+                 file "/var/named/192.168.142.db";
+
+                 allow-update { none; };
+        };
+        
+        
   - name: Create File /var/named/life.local.db
     become: yes
     file:
-      path: /etc/named/life.local.db
+      path: /var/named/life.local.db
       state: touch
       mode: '0640'
 
-  - name: Add Reverse Zone Config
+  - name: Add Forward Zone Config
     become: yes
     blockinfile:
-      path: /etc/named/life.local
+      path: /var/named/life.local.db
       backup: yes
       block: |
-        @   IN  SOA     ns1.life.local. root.life.local. (
+        @   IN  SOA     dns.life.local. root.life.local. (
                                                         1001    ;Serial
                                                         3H      ;Refresh
                                                         15M     ;Retry
@@ -63,37 +74,19 @@
                                                         )
 
         ;Name Server Information
-        @      IN  NS      ns1.itzgeek.local.
+        @        IN  NS      dns.life.local.
 
         ;IP address of Name Server
-        ns1 IN  A       192.168.0.10
+        ns1      IN  A       192.168.142.254
 
         ;A - Record HostName To IP Address
         web1     IN  A       192.168.142.111
         db1      IN  A       192.168.142.121
 
-  
-
-
-  - name: Add Reverse Zone Config
-    become: yes
-    blockinfile:
-      path: /etc/named.conf
-      backup: yes
-      block: |
-        zone "142.168.192.in-addr.arpa" IN {
-
-                            type master;
-
-                            file "/var/named/192.168.142.db";
-
-                            allow-update { none; };
-        };
-
   - name: Create File /var/named/192.168.142.db
     become: yes
     file:
-      path: /etc/named/192.168.142.db
+      path: /var/named/192.168.142.db
       owner: root
       group: root
       state: touch
@@ -102,10 +95,10 @@
   - name: Reverse Zone db file
     become: yes
     blockinfile:
-      path: /etc/named/192.168.142.db
+      path: /var/named/192.168.142.db
       backup: yes
       block: |
-        @   IN  SOA     ns1.life.local. root.life.local. (
+        @   IN  SOA     dns.life.local. root.life.local. (
                                                   1001    ;Serial
                                                   3H      ;Refresh
                                                   15M     ;Retry
@@ -114,10 +107,10 @@
                                                   )
        
         ;Name Server Information
-        @ IN  NS      ns1.life.local.
+        @        IN  NS      dns.life.local.
 
         ;Reverse lookup for Name Server
-        10        IN  PTR     ns1.life.local.
+        10       IN  PTR     dns.life.local.
 
         ;PTR Record IP address to HostName
         111      IN  PTR     web1.life.local.
