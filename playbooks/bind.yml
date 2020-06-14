@@ -1,0 +1,132 @@
+---
+- hosts: dns
+  task: 
+  - name: Install Bind 1...
+    become: yes
+    yum:
+      name: 'bind'
+      state: present
+  - name: Install Bind 2...
+    become: yes
+    yum:
+      name: 'bind-utils'
+      state: present
+  - name: Configure /etc/named.conf part 1
+    become: yes
+    replace:
+      path: /etc/named.conf
+      backup: yes
+      regexp: '^listen-on port 53 { 127.0.0.1; }; $'
+      replace: 'listen-on port 53 { 127.0.0.1; 192.168.142.254; }; ' 
+  - name: Configure /etc/named.conf part 2
+    become: yes
+    replace:
+      path: /etc/named.conf
+      backup: yes
+      regexp: '^allow-query     { localhost; };$'
+      replace: 'allow-query     { localhost; 192.168.142.0/24; };'
+
+  - name: Add Forward Zone Config
+    become: yes
+    blockinfile:
+      path: /etc/named.conf
+      backup: yes
+      block: |
+        zone "life.local" IN {
+
+                 type master;
+
+                 file "/var/named/life.local.db";
+
+                 allow-update { none; };
+        };
+        
+  - name: Create File /var/named/life.local.db
+    become: yes
+    file:
+      path: /etc/named/life.local.db
+      state: touch
+      mode: '0640'
+
+  - name: Add Reverse Zone Config
+    become: yes
+    blockinfile:
+      path: /etc/named/life.local
+      backup: yes
+      block: |
+        @   IN  SOA     ns1.life.local. root.life.local. (
+                                                        1001    ;Serial
+                                                        3H      ;Refresh
+                                                        15M     ;Retry
+                                                        1W      ;Expire
+                                                        1D      ;Minimum TTL
+                                                        )
+
+        ;Name Server Information
+        @      IN  NS      ns1.itzgeek.local.
+
+        ;IP address of Name Server
+        ns1 IN  A       192.168.0.10
+
+        ;A - Record HostName To IP Address
+        web1     IN  A       192.168.142.111
+        db1      IN  A       192.168.142.121
+
+  
+
+
+  - name: Add Reverse Zone Config
+    become: yes
+    blockinfile:
+      path: /etc/named.conf
+      backup: yes
+      block: |
+        zone "142.168.192.in-addr.arpa" IN {
+
+                            type master;
+
+                            file "/var/named/192.168.142.db";
+
+                            allow-update { none; };
+        };
+
+  - name: Create File /var/named/192.168.142.db
+    become: yes
+    file:
+      path: /etc/named/192.168.142.db
+      owner: root
+      group: root
+      state: touch
+      mode: '0640'
+      
+  - name: Reverse Zone db file
+    become: yes
+    blockinfile:
+      path: /etc/named/192.168.142.db
+      backup: yes
+      block: |
+        @   IN  SOA     ns1.life.local. root.life.local. (
+                                                  1001    ;Serial
+                                                  3H      ;Refresh
+                                                  15M     ;Retry
+                                                  1W      ;Expire
+                                                  1D      ;Minimum TTL
+                                                  )
+       
+        ;Name Server Information
+        @ IN  NS      ns1.life.local.
+
+        ;Reverse lookup for Name Server
+        10        IN  PTR     ns1.life.local.
+
+        ;PTR Record IP address to HostName
+        111      IN  PTR     web1.life.local.
+        121      IN  PTR     db1.life.local.
+                    
+  - name: Start Bind9 DNS
+    become: yes
+    service:
+      name: 'named'
+      enabled: yes
+      state: started
+      
