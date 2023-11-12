@@ -1,0 +1,22 @@
+---
+- name: Secure SSHd configuration
+  hosts: all
+  become: true
+  tasks:
+    - name: Update sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: "{{ item.state }}"
+      with_items:
+        - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no', state: 'present' }
+        - { regexp: '^PasswordAuthentication', line: 'PasswordAuthentication no', state: 'present' }
+        - { regexp: '^ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no', state: 'present' }
+        - { regexp: '^UsePAM', line: 'UsePAM no', state: 'present' }
+        - { regexp: '^X11Forwarding', line: 'X11Forwarding no', state: 'present' }
+        - { regexp: '^PermitEmptyPasswords', line: 'PermitEmptyPasswords no', state: 'present' }
+    - name: Restart SSHd Service
+      service:
+        name: sshd
+        state: restarted
