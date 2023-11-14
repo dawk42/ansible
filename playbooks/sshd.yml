@@ -16,6 +16,28 @@
         - { regexp: '^UsePAM', line: 'UsePAM no', state: 'present' }
         - { regexp: '^X11Forwarding', line: 'X11Forwarding no', state: 'present' }
         - { regexp: '^PermitEmptyPasswords', line: 'PermitEmptyPasswords no', state: 'present' }
+        
+        - { regexp: '^Banner', line: 'Banner /etc/issue', state: 'present' }
+        - { regexp: '^ClientAliveCountMax', line: 'ClientAliveCountMax 1', state: 'present' }
+        - { regexp: '^ClientAliveInterval', line: 'ClientAliveInterval 600', state: 'present' }
+        - { regexp: '^Compression', line: 'Compression no', state: 'present' }
+        - { regexp: '^GSSAPIAuthentication', line: 'GSSAPIAuthentication no', state: 'present' }
+        - { regexp: '^HostbasedAuthentication', line: 'HostbasedAuthentication no', state: 'present' }
+        - { regexp: '^IgnoreRhosts', line: 'IgnoreRhosts yes', state: 'present' }
+        - { regexp: '^IgnoreUserKnownHosts', line: 'IgnoreUserKnownHosts yes', state: 'present' }
+        - { regexp: '^KerberosAuthentication', line: 'KerberosAuthentication no', state: 'present' }
+        - { regexp: '^LogLevel', line: 'LogLevel VERBOSE', state: 'present' }
+        - { regexp: '^PermitEmptyPasswords', line: 'PermitEmptyPasswords no', state: 'present' }
+        - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no', state: 'present' }
+        - { regexp: '^PermitUserEnvironment', line: 'PermitUserEnvironment no', state: 'present' }
+        - { regexp: '^PrintLastLog', line: 'PrintLastLog yes', state: 'present' }
+        - { regexp: '^PubkeyAuthentication', line: 'PubkeyAuthentication yes', state: 'present' }
+        - { regexp: '^RekeyLimit', line: 'RekeyLimit 1G 1h', state: 'present' }
+        - { regexp: '^StrictModes', line: 'StrictModes yes', state: 'present' }
+        - { regexp: '^UsePAM', line: 'UsePAM yes', state: 'present' }
+        - { regexp: '^UsePrivilegeSeparation', line: 'UsePrivilegeSeparation sandbox', state: 'present' }
+        - { regexp: '^X11forwarding', line: 'X11forwarding' no', state: 'present' }
+        - { regexp: '^X11UseLocalhost', line: 'X11UseLocalhost yes', state: 'present' }
     - name: Restart SSHd Service
       service:
         name: sshd
